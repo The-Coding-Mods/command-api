@@ -1,0 +1,1 @@
+trackmania-command-automation
