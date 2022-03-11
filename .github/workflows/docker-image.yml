@@ -18,4 +18,4 @@ jobs:
         echo "RELEASE_VERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)" >> $GITHUB_ENV
    
     - name: Build the Docker image
-      run: docker build . --file /build/Dockerfile --tag tag365/tm-streams-support-api:${{ env.RELEASE_VERSION }}
+      run: docker build . --file \build/Dockerfile --tag tag365/tm-streams-support-api:${{ env.RELEASE_VERSION }}
