@@ -41,9 +41,7 @@ jobs:
       with:
         name: jarpack
         path: ./target
-    - name: DEBUG
-      run: ls && cd target && ls
-      
+    
     - name: Copy Jar to build
       run: cp target/*.jar build/command-api.jar
     
@@ -55,4 +53,4 @@ jobs:
         echo "RELEASE_VERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)" >> $GITHUB_ENV
         
     - name: Build the Docker image
-      run: docker build . --file \build/Dockerfile --tag tag365/tm-streams-support-api:${{ env.RELEASE_VERSION }}
+      run: docker build -t tag365/tm-streams-support-api:${{ env.RELEASE_VERSION }} \build
