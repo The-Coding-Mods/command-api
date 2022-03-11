@@ -21,8 +21,9 @@ jobs:
         
     - name: Build with Maven
       run: mvn -B package
+      
     - name: Copy Jar to build
-      run: cp target/*.jar build/command-api.jar
+      run: cp target/*.jar build/command-api.jar && ls /build
 
     - name: Set Release version env variable
       run: |
