@@ -21,18 +21,12 @@ jobs:
         
     - name: Build with Maven
       run: mvn -B package
-      
-    - name: Copy Jar to build
-      run: mkdir jar && cp target/*.jar jar/command-api.jar
 
-    - name: Set Release version env variable
-      run: |
-        echo "RELEASE_VERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)" >> $GITHUB_ENV
     - name: Upload jar
       uses: actions/upload-artifact@v1
       with:
         name: jarpack
-        path: ./jar
+        path: ./target
 
    
   deploy:
@@ -45,7 +39,13 @@ jobs:
       with:
         name: jarpack
         path: ./jar
-    - name: DEBUG
-      run: ls && cd jar && ls
+        
+    - name: Copy Jar to build
+      run: cp target/*.jar build/command-api.jar
+      
+    - name: Set Release version env variable
+      run: |
+        echo "RELEASE_VERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)" >> $GITHUB_ENV
+        
     - name: Build the Docker image
       run: docker build . --file \build/Dockerfile --tag tag365/tm-streams-support-api:${{ env.RELEASE_VERSION }}
