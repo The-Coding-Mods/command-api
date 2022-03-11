@@ -23,12 +23,29 @@ jobs:
       run: mvn -B package
       
     - name: Copy Jar to build
-      run: cp target/*.jar build/command-api.jar
-    - name:  DEBUG
-      run: cd build && ls
+      run: mkdir jar && cp target/*.jar jar/command-api.jar
+
     - name: Set Release version env variable
       run: |
         echo "RELEASE_VERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)" >> $GITHUB_ENV
+    - name: Upload jar
+      uses: actions/upload-artifact@v1
+      with:
+        name: jarpack
+        path: ./jar
+
    
+  deploy:
+    name: Deploy
+    needs: [build]
+    runs-on: ubuntu-latest
+    steps:
+    - name: Download jar
+      uses: actions/download-artifact@v1
+      with:
+        name: jarpack
+        path: ./jar
+    - name: DEBUG
+      run: ls && cd jar && ls
     - name: Build the Docker image
       run: docker build . --file \build/Dockerfile --tag tag365/tm-streams-support-api:${{ env.RELEASE_VERSION }}
