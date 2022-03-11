@@ -39,7 +39,9 @@ jobs:
       with:
         name: jarpack
         path: ./target
-        
+    - name: DEBUG
+      run: cd target && ls
+      
     - name: Copy Jar to build
       run: cp target/*.jar build/command-api.jar
       
