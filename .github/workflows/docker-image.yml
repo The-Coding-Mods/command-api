@@ -38,7 +38,7 @@ jobs:
       uses: actions/download-artifact@v1
       with:
         name: jarpack
-        path: ./jar
+        path: ./target
         
     - name: Copy Jar to build
       run: cp target/*.jar build/command-api.jar
