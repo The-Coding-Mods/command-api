@@ -10,12 +10,11 @@
     </parent>
     <groupId>trackmania.improvment</groupId>
     <artifactId>command-api</artifactId>
-    <version>${project.version}</version>
+    <version>0.1.9</version>
     <name>command_api</name>
     <description>Rest Api to improve commands</description>
     <properties>
         <java.version>14</java.version>
-        <project.version>0.1.8</project.version>
     </properties>
     <dependencies>
         <dependency>

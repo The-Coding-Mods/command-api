@@ -1,4 +1,4 @@
-package stream.support.command_api.models;
+package stream.support.command.api.models;
 
 import lombok.*;
 

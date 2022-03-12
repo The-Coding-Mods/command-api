@@ -1,7 +1,7 @@
-package stream.support.command_api.util;
+package stream.support.command.api.util;
 
 import org.springframework.stereotype.Service;
-import stream.support.command_api.models.PlayerResult;
+import stream.support.command.api.models.PlayerResult;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;

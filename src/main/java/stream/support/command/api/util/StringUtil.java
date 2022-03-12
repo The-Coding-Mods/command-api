@@ -1,4 +1,4 @@
-package stream.support.command_api.util;
+package stream.support.command.api.util;
 
 public class StringUtil {
 

@@ -1,10 +1,10 @@
-package stream.support.command_api.network;
+package stream.support.command.api.network;
 
 import org.springframework.stereotype.Service;
-import stream.support.command_api.models.Cotd;
-import stream.support.command_api.models.CotdResult;
-import stream.support.command_api.models.PlayerResult;
-import stream.support.command_api.models.RecentCotdCompetitions;
+import stream.support.command.api.models.RecentCotdCompetitions;
+import stream.support.command.api.models.Cotd;
+import stream.support.command.api.models.CotdResult;
+import stream.support.command.api.models.PlayerResult;
 
 import java.util.ArrayList;
 import java.util.List;
