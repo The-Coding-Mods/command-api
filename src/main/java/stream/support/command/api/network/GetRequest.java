@@ -14,6 +14,10 @@ import java.nio.charset.StandardCharsets;
 import java.util.Map;
 import java.util.Optional;
 
+/**
+ * Generic Class to allow get request with different return types
+ * @param <T> response will get parsed to that class
+ */
 @Slf4j
 public class GetRequest<T> {
     private static final ObjectMapper mapper = new ObjectMapper();
@@ -30,6 +34,11 @@ public class GetRequest<T> {
         this.headers = headers;
     }
 
+    /**
+     * Send the request to the provided URL and use headers
+     * Save the response as byte array
+     * @return this
+     */
     public GetRequest<T> execute() {
         try (CloseableHttpClient client = HttpClients.createDefault()) {
             HttpGet request = new HttpGet(url);
@@ -45,6 +54,12 @@ public class GetRequest<T> {
         return this;
     }
 
+    /**
+     * Parse the raw input (byte array) to the given {@code <T>} class.
+     * JSON only
+     *
+     * @return this
+     */
     @SneakyThrows
     public GetRequest<T> parse() {
         parsedResponse = mapper.readValue(rawResponse, clazz);

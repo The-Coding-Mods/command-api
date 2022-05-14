@@ -10,7 +10,10 @@ import stream.support.command.api.network.HTTPRequests;
 import stream.support.command.api.util.Cache;
 
 import javax.annotation.PostConstruct;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZoneOffset;
 import java.util.List;
 import java.util.Optional;
 
@@ -25,15 +28,23 @@ public class CotdResultRepository {
         this.cache = cache;
     }
 
-
+    /**
+     * Check if new result needs to be retrieved or cache can be used
+     * Get the position from the corresponding source and return it
+     *
+     * @param playerId TM User of the player
+     * @return Optional of the last position, empty if not played
+     */
     public Optional<Integer> getLastPlayerPosition(String playerId) {
-        LocalDateTime timeNow = LocalDateTime.now();
+        LocalDateTime timeNow = LocalDateTime.now(ZoneId.of("Europe/Paris"));
         final LocalDateTime cotdTime = getTodayCotdTime(timeNow);
         log.info("CotdTime: {}", cotdTime);
         log.info("CachedTime: {}", cache.getLastUpdated());
 
         LocalDateTime fromCache = cache.getLastUpdated();
         Optional<Integer> relevantPosition = Optional.empty();
+        // Only try to update after 19
+        // check if already updated after 19 (the latest change is after cotd start time)
         if ((timeNow.getHour() >= 19 && fromCache.isBefore(cotdTime)) || fromCache.isBefore(cotdTime.minusDays(1))) {
             log.info("Get new cotd results");
             log.info(timeNow.toString());
@@ -53,10 +64,26 @@ public class CotdResultRepository {
         return relevantPosition;
     }
 
-    private Optional<PlayerResult> findPlayerByPlayerId(List<PlayerResult> result, String playerId) {
-        return result.stream().filter(player -> player.getPlayer().getId().trim().equalsIgnoreCase(playerId.trim())).findFirst();
+    /**
+     * Loop through the {@code resultList} and filter by {@code playerId}
+     *
+     * @param resultList List of all results either from cache or new
+     * @param playerId TM User of the player
+     * @return Optional if player was found in the list
+     */
+    private Optional<PlayerResult> findPlayerByPlayerId(List<PlayerResult> resultList, String playerId) {
+        return resultList.stream().filter(player -> player.getPlayer().getId().trim().equalsIgnoreCase(playerId.trim())).findFirst();
     }
 
+    /**
+     * Send request to tm.io api:
+     *  - get competition id
+     *  - get match id from competition
+     *  - get results (multiple pages)
+     *
+     * @param time Current time
+     * @param yesterdayCotd true if the cotd from yesterday needs to be looked at (before 19 o'clock)
+     */
     private void getLastCotdResults(LocalDateTime time, boolean yesterdayCotd) {
         RecentCotdCompetitions cotdRecentHistory = httpRequests.getRecentCotdCompetitions();
         if (yesterdayCotd) time = time.minusDays(1);
@@ -76,9 +103,12 @@ public class CotdResultRepository {
     }
 
     private LocalDateTime getTodayCotdTime(LocalDateTime now) {
-        return LocalDateTime.of(now.getYear(), now.getMonth(), now.getDayOfMonth(), 18, 45);
+        return LocalDateTime.of(now.getYear(), now.getMonth(), now.getDayOfMonth(), 19, 30);
     }
 
+    /**
+     * Cache last cotd on startup
+     */
     @PostConstruct
     private void postConstruct() {
         log.info("Get cotd results after startup");

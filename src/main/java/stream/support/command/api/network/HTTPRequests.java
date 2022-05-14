@@ -17,12 +17,26 @@ public class HTTPRequests {
         TM_IO_API_HEADERS.put("User-Agent", "latest-cotd-player-position by Tag365 (Tag365#0365)");
     }
 
+    /**
+     * Request COTD matches
+     *
+     * @param compId ID of the COTD
+     * @return COTD DAO
+     */
     public Cotd getCotdByCompId(long compId) {
         GetRequest<Cotd> cotdHistoryGetRequest = new GetRequest<>("https://trackmania.io/api/comp/" + compId, Cotd.class, TM_IO_API_HEADERS);
         Optional<Cotd> optional = cotdHistoryGetRequest.execute().parse().getParsedResponse();
         return optional.orElse(null);
     }
 
+    /**
+     * Request player results of the cotd
+     * They are provided in multiple pages so do request until empty response
+     *
+     * @param compId ID of the COTD
+     * @param matchId ID of the match
+     * @return List of all Players that competed in that match
+     */
     public List<PlayerResult> getCotdResultsForMatch(long compId, long matchId) {
         int i = 0;
         List<PlayerResult> results = new ArrayList<>();
@@ -48,9 +62,6 @@ public class HTTPRequests {
     public RecentCotdCompetitions getRecentCotdCompetitions() {
         GetRequest<RecentCotdCompetitions> cotdHistoryGetRequest = new GetRequest<>("https://trackmania.io/api/cotd/0", RecentCotdCompetitions.class, TM_IO_API_HEADERS);
         Optional<RecentCotdCompetitions> optional = cotdHistoryGetRequest.execute().parse().getParsedResponse();
-        if (optional.isPresent()) {
-            return optional.get();
-        }
-        return null;
+        return optional.orElse(null);
     }
 }
