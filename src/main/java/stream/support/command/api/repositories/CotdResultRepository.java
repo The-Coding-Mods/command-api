@@ -98,7 +98,7 @@ public class CotdResultRepository {
                 List<PlayerResult> cotdResult = httpRequests.getCotdResultsForMatch(optional.get().getId(), cotd.getRounds().get(0).getMatches().get(0).getId());
                 if (!cotdResult.isEmpty()) {
                     cache.setLastCotdDiv1Results(cotdResult);
-                    cache.setLastUpdated(LocalDateTime.now());
+                    cache.setLastUpdated(LocalDateTime.now(ZoneId.of("Europe/Paris")));
                 }
             }
         }
