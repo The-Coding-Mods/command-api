@@ -1,6 +1,8 @@
 package stream.support.command.api.repositories;
 
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import stream.support.command.api.models.Competition;
 import stream.support.command.api.models.Cotd;
@@ -10,10 +12,7 @@ import stream.support.command.api.network.HTTPRequests;
 import stream.support.command.api.util.Cache;
 
 import javax.annotation.PostConstruct;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.time.ZoneOffset;
+import java.time.*;
 import java.util.List;
 import java.util.Optional;
 
@@ -22,10 +21,13 @@ import java.util.Optional;
 public class CotdResultRepository {
     private final HTTPRequests httpRequests;
     private final Cache cache;
+    private Clock clock;
 
+    @Autowired
     public CotdResultRepository(HTTPRequests requests, Cache cache) {
         this.httpRequests = requests;
         this.cache = cache;
+        this.clock = Clock.system(ZoneId.of("Europe/Paris"));
     }
 
     /**
@@ -36,7 +38,7 @@ public class CotdResultRepository {
      * @return Optional of the last position, empty if not played
      */
     public Optional<Integer> getLastPlayerPosition(String playerId) {
-        LocalDateTime timeNow = LocalDateTime.now(ZoneId.of("Europe/Paris"));
+        LocalDateTime timeNow = LocalDateTime.now(clock);
         final LocalDateTime cotdTime = getTodayCotdTime(timeNow);
         log.info("CotdTime: {}", cotdTime);
         log.info("CachedTime: {}", cache.getLastUpdated());
@@ -115,5 +117,7 @@ public class CotdResultRepository {
         LocalDateTime timeNow = LocalDateTime.now();
         getLastCotdResults(timeNow, timeNow.getHour() < 19);
     }
-
+    protected void setClock(Clock clock) {
+        this.clock = clock;
+    }
 }
