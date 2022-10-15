@@ -62,7 +62,9 @@ public class GetRequest<T> {
      */
     @SneakyThrows
     public GetRequest<T> parse() {
-        parsedResponse = mapper.readValue(rawResponse, clazz);
+        try {
+            parsedResponse = mapper.readValue(rawResponse, clazz);
+        } catch (RuntimeException ignored) {}
         return this;
     }
 

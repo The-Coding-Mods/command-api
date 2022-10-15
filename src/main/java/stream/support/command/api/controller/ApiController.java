@@ -12,12 +12,13 @@ import stream.support.command.api.util.StringUtil;
 
 import java.util.Optional;
 
-@RestController
 @Slf4j
+@RestController
 public class ApiController {
 
     private final CotdResultRepository cotdResultRepository;
     private final FollowageRepository followageRepository;
+
 
     public ApiController(CotdResultRepository repository, FollowageRepository followageRepository) {
         this.cotdResultRepository = repository;

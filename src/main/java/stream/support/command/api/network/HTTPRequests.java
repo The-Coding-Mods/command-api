@@ -1,10 +1,7 @@
 package stream.support.command.api.network;
 
 import org.springframework.stereotype.Service;
-import stream.support.command.api.models.Cotd;
-import stream.support.command.api.models.CotdResult;
-import stream.support.command.api.models.PlayerResult;
-import stream.support.command.api.models.RecentCotdCompetitions;
+import stream.support.command.api.models.*;
 
 import java.util.*;
 
@@ -63,5 +60,10 @@ public class HTTPRequests {
         GetRequest<RecentCotdCompetitions> cotdHistoryGetRequest = new GetRequest<>("https://trackmania.io/api/cotd/0", RecentCotdCompetitions.class, TM_IO_API_HEADERS);
         Optional<RecentCotdCompetitions> optional = cotdHistoryGetRequest.execute().parse().getParsedResponse();
         return optional.orElse(null);
+    }
+
+    public Optional<MMPlayer> getPlayer(String playerId) {
+        GetRequest<MMPlayer> mmPlayer = new GetRequest<>("https://trackmania.io/api/player/" + playerId, MMPlayer.class, TM_IO_API_HEADERS);
+        return mmPlayer.execute().parse().getParsedResponse();
     }
 }
