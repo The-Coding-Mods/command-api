@@ -14,22 +14,14 @@ import java.util.Optional;
 
 @Slf4j
 @RestController
-public class ApiController {
+public class CotdApiController {
 
     private final CotdResultRepository cotdResultRepository;
-    private final FollowageRepository followageRepository;
 
-
-    public ApiController(CotdResultRepository repository, FollowageRepository followageRepository) {
+    public CotdApiController(CotdResultRepository repository) {
         this.cotdResultRepository = repository;
-        this.followageRepository = followageRepository;
     }
 
-    @GetMapping("/followage/{channel}/{user}")
-    public ResponseEntity<String> getFollowAge(@PathVariable String channel, @PathVariable String user) {
-        String followage = followageRepository.getFollowageForUser(channel, user);
-        return ResponseEntity.ok(followage);
-    }
 
     @GetMapping("/cotd/position")
     public ResponseEntity<String> getLatestCotdPosition(@RequestParam String playerId) {
@@ -37,6 +29,11 @@ public class ApiController {
         Optional<Integer> relevantPosition = cotdResultRepository.getLastPlayerPosition(playerId);
 
         return relevantPosition.map(integer -> ResponseEntity.ok(StringUtil.ordinal(integer))).orElseGet(() -> ResponseEntity.ok("did not participate"));
+    }
+
+    @GetMapping("/cotd/winner")
+    public ResponseEntity<String> getLatestCotdWinner() {
+        return ResponseEntity.ok(cotdResultRepository.getLatestCotdWinner());
     }
 
 }

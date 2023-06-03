@@ -1,5 +1,5 @@
 ## run application
-FROM openjdk:14
+FROM openjdk:17
 EXPOSE 8080/tcp
 COPY command-api.jar api.jar
 

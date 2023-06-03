@@ -17,14 +17,14 @@ public class MatchMakingApiController {
         this.matchMakingRepository = matchMakingRepository;
     }
 
-    @GetMapping("/match-making/rank/{playerId}")
+    @GetMapping("/match-making/{playerId}/rank")
     public ResponseEntity<Integer> getPlayerMatchMakingRank(@PathVariable String playerId) {
         Optional<Integer> mmPosition = matchMakingRepository.getPlayerPosition(playerId);
 
         return mmPosition.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
 
-    @GetMapping("/match-making/points/{playerId}")
+    @GetMapping("/match-making/{playerId}/points")
     public ResponseEntity<Integer> getPlayerMatchMakingPoints(@PathVariable String playerId) {
         Optional<Integer> mmPosition = matchMakingRepository.getPlayerPoints(playerId);
 

@@ -1,6 +1,6 @@
 package stream.support.command.api.repositories;
 
-import lombok.Setter;
+import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -11,8 +11,11 @@ import stream.support.command.api.models.RecentCotdCompetitions;
 import stream.support.command.api.network.HTTPRequests;
 import stream.support.command.api.util.Cache;
 
-import javax.annotation.PostConstruct;
-import java.time.*;
+
+import java.time.Clock;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 
@@ -66,11 +69,26 @@ public class CotdResultRepository {
         return relevantPosition;
     }
 
+
+    public String getLatestCotdWinner() {
+        LocalDateTime timeNow = LocalDateTime.now(clock);
+        final LocalDateTime cotdTime = getTodayCotdTime(timeNow);
+        LocalDateTime fromCache = cache.getLastUpdated();
+        if ((timeNow.getHour() >= 19 && fromCache.isBefore(cotdTime)) || fromCache.isBefore(cotdTime.minusDays(1))) {
+            log.info("Get new cotd results");
+            log.info(timeNow.toString());
+            getLastCotdResults(timeNow, timeNow.getHour() < 19);
+        } else {
+            log.info("Use cached cotd results");
+        }
+        return cache.getLastCotdDiv1Results().get(0).getPlayer().getDisplayName();
+    }
+
     /**
      * Loop through the {@code resultList} and filter by {@code playerId}
      *
      * @param resultList List of all results either from cache or new
-     * @param playerId TM User of the player
+     * @param playerId   TM User of the player
      * @return Optional if player was found in the list
      */
     private Optional<PlayerResult> findPlayerByPlayerId(List<PlayerResult> resultList, String playerId) {
@@ -79,11 +97,11 @@ public class CotdResultRepository {
 
     /**
      * Send request to tm.io api:
-     *  - get competition id
-     *  - get match id from competition
-     *  - get results (multiple pages)
+     * - get competition id
+     * - get match id from competition
+     * - get results (multiple pages)
      *
-     * @param time Current time
+     * @param time          Current time
      * @param yesterdayCotd true if the cotd from yesterday needs to be looked at (before 19 o'clock)
      */
     private void getLastCotdResults(LocalDateTime time, boolean yesterdayCotd) {
@@ -97,6 +115,7 @@ public class CotdResultRepository {
             if (!cotd.isInvalid()) {
                 List<PlayerResult> cotdResult = httpRequests.getCotdResultsForMatch(optional.get().getId(), cotd.getRounds().get(0).getMatches().get(0).getId());
                 if (!cotdResult.isEmpty()) {
+                    cotdResult = cotdResult.stream().filter(playerResult -> playerResult.getPosition() != 0).sorted(Comparator.comparingInt(PlayerResult::getPosition)).toList();
                     cache.setLastCotdDiv1Results(cotdResult);
                     cache.setLastUpdated(LocalDateTime.now(ZoneId.of("Europe/Paris")));
                 }
@@ -117,6 +136,7 @@ public class CotdResultRepository {
         LocalDateTime timeNow = LocalDateTime.now();
         getLastCotdResults(timeNow, timeNow.getHour() < 19);
     }
+
     protected void setClock(Clock clock) {
         this.clock = clock;
     }
