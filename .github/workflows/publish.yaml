@@ -12,3 +12,4 @@ jobs:
     uses: ./.github/workflows/docker_build.yaml
     with:
       push: true
+    secrets: inherit
