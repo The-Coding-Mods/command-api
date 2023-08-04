@@ -1,4 +1,4 @@
-name: Build CI
+name: "Build CI"
 
 on:
   workflow_dispatch:
@@ -7,11 +7,11 @@ on:
         description: "Publish Docker image regardless of branch"
         required: true
         default: 'false'
-
+  merge_group:
   pull_request:
   push:
     branches:
-      - "master"
+      - master
 
 jobs:
   maven-build:
