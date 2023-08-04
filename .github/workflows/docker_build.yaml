@@ -39,4 +39,4 @@ jobs:
         with:
           context: ./build
           push: ${{ inputs.push }}
-          tags: tag365/tm-streams-support-api:${{ env.RELEASE_VERSION }}
+          tags: tag365/tm-streams-support-api:${{ env.RELEASE_VERSION }} , tag365/tm-streams-support-api:latest
