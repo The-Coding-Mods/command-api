@@ -35,7 +35,7 @@ jobs:
           echo "RELEASE_VERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)" >> $GITHUB_ENV
 
       - name: Add snapshot
-        if: !startsWith(github.ref, 'refs/tags/v')
+        if: startsWith(github.ref, 'refs/tags/v')
         run: |
           echo ${{ env.RELEASE_VERSION }}
           echo "RELEASE_VERSION=${{ env.RELEASE_VERSION }}-SNAPSHOT" >> $GITHUB_ENV
