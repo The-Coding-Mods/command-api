@@ -1,0 +1,42 @@
+name: Docker
+
+on:
+  workflow_call:
+    inputs:
+      push:
+        required: true
+        type: boolean
+        default: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout
+        uses: actions/checkout@v3
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+
+      - name: Download Jar
+        uses: actions/download-artifact@v3
+        with:
+          name: command-api.jar
+          path: build/command-api.jar
+
+      - name: Extract Project version
+        run: |
+          echo "RELEASE_VERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)" >> $GITHUB_ENV
+
+      - name: Add snapshot
+        if: github.ref != 'refs/heads/master'
+        run: |
+          echo ${{ env.RELEASE_VERSION }}
+          echo "RELEASE_VERSION=${{ env.RELEASE_VERSION }}-SNAPSHOT" >> $GITHUB_ENV
+
+      - name: Build
+        uses: docker/build-push-action@v4
+        with:
+          context: ./build
+          push: ${{ inputs.push }}
+          tags: tag365/tm-streams-support-api:${{ env.RELEASE_VERSION }}
