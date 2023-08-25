@@ -20,9 +20,12 @@ jobs:
 
       - name: Build with Maven
         run: mvn -B --no-transfer-progress package
-
+      - name: Rename Jar
+        shell: bash
+        run: | 
+          mv target/*.jar target/command-api.jar
       - name: Upload Jar
         uses: actions/upload-artifact@v3
         with:
-          name: command-api.jar
-          path: target/*.jar
+          name: command-api.zip
+          path: target/command-api.jar
