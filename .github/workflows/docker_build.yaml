@@ -34,8 +34,9 @@ jobs:
           ls -l
 
       - name: Unzip artifact
-        working-directory: ./build
-        run: unzip -qq command-api.zip
+        run: |
+          cd build
+          unzip -qq command-api.zip
         
       - name: debug
         shell: bash
