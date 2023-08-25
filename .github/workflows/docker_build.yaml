@@ -32,7 +32,7 @@ jobs:
         run: |
           cd build
           cd command-api
-          ls -l
+          ls -lh
           file *
         
       - name: debug
