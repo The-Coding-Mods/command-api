@@ -25,14 +25,15 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           name: command-api
-          path: build/command-api.jar
+          path: build/command-api
           
       - name: debug
         shell: bash
         run: |
           cd build
-          file command-api.jar
+          cd command-api
           ls -l
+          file *
         
       - name: debug
         shell: bash
