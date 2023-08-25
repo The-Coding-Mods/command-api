@@ -25,18 +25,14 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           name: command-api
-          path: build/command-api.zip
-
+          path: build/command-api.jar
+          
       - name: debug
         shell: bash
         run: |
           cd build
+          file command-api.jar
           ls -l
-
-      - name: Unzip artifact
-        run: |
-          cd build
-          unzip -qq command-api.zip
         
       - name: debug
         shell: bash
