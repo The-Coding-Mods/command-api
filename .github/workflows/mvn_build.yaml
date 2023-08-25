@@ -27,5 +27,5 @@ jobs:
       - name: Upload Jar
         uses: actions/upload-artifact@v3
         with:
-          name: command-api.zip
+          name: command-api
           path: target/command-api.jar
