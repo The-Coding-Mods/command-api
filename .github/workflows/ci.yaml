@@ -14,14 +14,7 @@ on:
       - master
 
 jobs:
-  test:
-    runs-on: ubuntu
-    env: 
-      PUBLISH_ARTIFACT: ${{ github.event.inputs.publish_artifacts }}
-    steps:
-      - name: print
-        run: echo "${{ env.PUBLISH_ARTIFACT }}"
-      
+    
   maven-build:
     uses: ./.github/workflows/mvn_build.yaml
     secrets: inherit
