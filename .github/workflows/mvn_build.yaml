@@ -25,7 +25,7 @@ jobs:
         run: | 
           mv target/*.jar target/command-api.jar
       - name: Upload Jar
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: command-api
           path: target/command-api.jar
