@@ -65,3 +65,4 @@ Retrieves the current match making rank of the player.
 #### Description:
 
 Retrieves the current match making points of the player.
+
