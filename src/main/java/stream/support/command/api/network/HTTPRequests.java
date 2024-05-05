@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import stream.support.command.api.models.Cotd;
 import stream.support.command.api.models.CotdResult;
@@ -17,10 +18,16 @@ import stream.support.command.api.models.kacky.WingoKackyElement;
 @Service
 public class HTTPRequests {
 
+    private final String followageToken;
+
     private static final Map<String, String> TM_IO_API_HEADERS = new HashMap<>();
 
     static {
         TM_IO_API_HEADERS.put("User-Agent", "latest-cotd-player-position by Tag365 (Tag365#0365)");
+    }
+
+    public HTTPRequests(@Value("${followage.token}") String followageToken) {
+        this.followageToken = followageToken;
     }
 
     /**
@@ -65,7 +72,8 @@ public class HTTPRequests {
 
     public String getFollowage(String channel, String user) {
         GetRequest<String> followage =
-            new GetRequest<>("https://api.crunchprank.net/twitch/followage/" + channel + "/" + user + "?precision=4",
+            new GetRequest<>(
+                "https://decapi.me/twitch/followage/" + channel + "/" + user + "?precision=4&token=" + followageToken,
                 String.class, new HashMap<>());
         return followage.execute().getRawResponse();
     }
