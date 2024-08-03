@@ -1,20 +1,25 @@
 package stream.support.command.api.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import lombok.*;
-
 import java.util.List;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 
 @Setter
 @Getter
 @ToString
 @NoArgsConstructor
 @AllArgsConstructor
-@JsonIgnoreProperties({"id", "numplayers", "liveid", "creatorplayer", "name", "description", "registrationstart", "registrationend", "startdate", "enddate", "leaderboardid", "manialink", "rulesurl", "streamurl", "websiteurl", "logourl", "verticalurl"})
+@JsonIgnoreProperties({"id", "numplayers", "liveid", "creatorplayer", "name", "description", "registrationstart",
+    "registrationend", "startdate", "enddate", "leaderboardid", "manialink", "rulesurl", "streamurl", "websiteurl",
+    "logourl", "verticalurl"})
 public class Cotd {
     private List<Round> rounds;
 
-    public boolean isInvalid(){
+    public boolean isInvalid() {
         return rounds == null || rounds.isEmpty() || !rounds.get(0).isCompleted();
     }
 }

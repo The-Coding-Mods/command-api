@@ -1,6 +1,12 @@
 package stream.support.command.api.repositories;
 
 import jakarta.annotation.PostConstruct;
+import java.time.Clock;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -10,14 +16,6 @@ import stream.support.command.api.models.PlayerResult;
 import stream.support.command.api.models.RecentCotdCompetitions;
 import stream.support.command.api.network.HTTPRequests;
 import stream.support.command.api.util.Cache;
-
-
-import java.time.Clock;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Optional;
 
 @Slf4j
 @Service
@@ -34,8 +32,8 @@ public class CotdResultRepository {
     }
 
     /**
-     * Check if new result needs to be retrieved or cache can be used
-     * Get the position from the corresponding source and return it
+     * Check if new result needs to be retrieved or cache can be used.
+     * Get the position from the corresponding source and return it.
      *
      * @param playerId TM User of the player
      * @return Optional of the last position, empty if not played
@@ -59,7 +57,8 @@ public class CotdResultRepository {
                 relevantPosition = Optional.of(optional.get().getPosition());
             }
         } else {
-            final Optional<PlayerResult> positionOptional = findPlayerByPlayerId(cache.getLastCotdDiv1Results(), playerId);
+            final Optional<PlayerResult> positionOptional =
+                findPlayerByPlayerId(cache.getLastCotdDiv1Results(), playerId);
             if (positionOptional.isPresent()) {
                 log.info("Use cached cotd results");
                 PlayerResult position = positionOptional.get();
@@ -85,14 +84,15 @@ public class CotdResultRepository {
     }
 
     /**
-     * Loop through the {@code resultList} and filter by {@code playerId}
+     * Loop through the {@code resultList} and filter by {@code playerId}.
      *
      * @param resultList List of all results either from cache or new
      * @param playerId   TM User of the player
      * @return Optional if player was found in the list
      */
     private Optional<PlayerResult> findPlayerByPlayerId(List<PlayerResult> resultList, String playerId) {
-        return resultList.stream().filter(player -> player.getPlayer().getId().trim().equalsIgnoreCase(playerId.trim())).findFirst();
+        return resultList.stream().filter(player -> player.getPlayer().getId().trim().equalsIgnoreCase(playerId.trim()))
+            .findFirst();
     }
 
     /**
@@ -106,16 +106,21 @@ public class CotdResultRepository {
      */
     private void getLastCotdResults(LocalDateTime time, boolean yesterdayCotd) {
         RecentCotdCompetitions cotdRecentHistory = httpRequests.getRecentCotdCompetitions();
-        if (yesterdayCotd) time = time.minusDays(1);
+        if (yesterdayCotd) {
+            time = time.minusDays(1);
+        }
         String dayString = String.format("%d-%02d-%02d", time.getYear(), time.getMonthValue(), time.getDayOfMonth());
 
-        Optional<Competition> optional = cotdRecentHistory.getCompetitions().stream().filter(c -> c.getName().contains("#1") && c.getName().contains(dayString)).findFirst();
+        Optional<Competition> optional = cotdRecentHistory.getCompetitions().stream()
+            .filter(c -> c.getName().contains("#1") && c.getName().contains(dayString)).findFirst();
         if (optional.isPresent()) {
             Cotd cotd = httpRequests.getCotdByCompId(optional.get().getId());
             if (!cotd.isInvalid()) {
-                List<PlayerResult> cotdResult = httpRequests.getCotdResultsForMatch(optional.get().getId(), cotd.getRounds().get(0).getMatches().get(0).getId());
+                List<PlayerResult> cotdResult = httpRequests.getCotdResultsForMatch(optional.get().getId(),
+                    cotd.getRounds().get(0).getMatches().get(0).getId());
                 if (!cotdResult.isEmpty()) {
-                    cotdResult = cotdResult.stream().filter(playerResult -> playerResult.getPosition() != 0).sorted(Comparator.comparingInt(PlayerResult::getPosition)).toList();
+                    cotdResult = cotdResult.stream().filter(playerResult -> playerResult.getPosition() != 0)
+                        .sorted(Comparator.comparingInt(PlayerResult::getPosition)).toList();
                     cache.setLastCotdDiv1Results(cotdResult);
                     cache.setLastUpdated(LocalDateTime.now(ZoneId.of("Europe/Paris")));
                 }
@@ -128,7 +133,7 @@ public class CotdResultRepository {
     }
 
     /**
-     * Cache last cotd on startup
+     * Cache last cotd on startup.
      */
     @PostConstruct
     private void postConstruct() {

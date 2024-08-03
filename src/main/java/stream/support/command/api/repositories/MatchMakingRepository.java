@@ -1,10 +1,9 @@
 package stream.support.command.api.repositories;
 
+import java.util.Optional;
 import org.springframework.stereotype.Repository;
 import stream.support.command.api.models.MMPlayer;
 import stream.support.command.api.network.HTTPRequests;
-
-import java.util.Optional;
 
 @Repository
 public class MatchMakingRepository {

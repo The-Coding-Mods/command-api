@@ -1,6 +1,10 @@
 package stream.support.command.api.network;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.util.Map;
+import java.util.Optional;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.http.HttpResponse;
@@ -9,13 +13,9 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.impl.io.EmptyInputStream;
 
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.util.Map;
-import java.util.Optional;
-
 /**
- * Generic Class to allow get request with different return types
+ * Generic Class to allow get request with different return types.
+ *
  * @param <T> response will get parsed to that class
  */
 @Slf4j
@@ -35,8 +35,9 @@ public class GetRequest<T> {
     }
 
     /**
-     * Send the request to the provided URL and use headers
-     * Save the response as byte array
+     * Send the request to the provided URL and use headers.
+     * Save the response as byte array.
+     *
      * @return this
      */
     public GetRequest<T> execute() {
@@ -45,7 +46,8 @@ public class GetRequest<T> {
             headers.forEach(request::addHeader);
             HttpResponse response = client.execute(request);
             log.info("Request send to {}", url);
-            if (response.getStatusLine().getStatusCode() == 200 && !(response.getEntity().getContent() instanceof EmptyInputStream)) {
+            if (response.getStatusLine().getStatusCode() == 200
+                && !(response.getEntity().getContent() instanceof EmptyInputStream)) {
                 rawResponse = response.getEntity().getContent().readAllBytes();
             }
         } catch (IOException e) {
@@ -62,9 +64,7 @@ public class GetRequest<T> {
      */
     @SneakyThrows
     public GetRequest<T> parse() {
-        try {
-            parsedResponse = mapper.readValue(rawResponse, clazz);
-        } catch (RuntimeException ignored) {}
+        parsedResponse = mapper.readValue(rawResponse, clazz);
         return this;
     }
 
