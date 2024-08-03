@@ -14,7 +14,6 @@ on:
       - master
 
 jobs:
-    
   maven-build:
     uses: ./.github/workflows/mvn_build.yaml
     secrets: inherit
@@ -25,3 +24,10 @@ jobs:
     with:
       push: ${{ github.event.inputs.publish_artifacts == 'true' }}
     secrets: inherit
+
+  checkstyle:
+    name: Checkstyle
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: mvn checkstyle:check --no-transfer-progress
