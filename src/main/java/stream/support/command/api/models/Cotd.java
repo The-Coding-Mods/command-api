@@ -13,9 +13,7 @@ import lombok.ToString;
 @ToString
 @NoArgsConstructor
 @AllArgsConstructor
-@JsonIgnoreProperties({"id", "numplayers", "liveid", "creatorplayer", "name", "description", "registrationstart",
-    "registrationend", "startdate", "enddate", "leaderboardid", "manialink", "rulesurl", "streamurl", "websiteurl",
-    "logourl", "verticalurl"})
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class Cotd {
     private List<Round> rounds;
 

@@ -13,7 +13,7 @@ import lombok.ToString;
 @ToString
 @NoArgsConstructor
 @AllArgsConstructor
-@JsonIgnoreProperties({"timestamp", "clubtag", "clubtagtimestamp", "trophies", "meta"})
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class MMPlayer {
     String accountid;
     String displayname;
