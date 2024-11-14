@@ -13,7 +13,7 @@ import lombok.ToString;
 @ToString
 @NoArgsConstructor
 @AllArgsConstructor
-@JsonIgnoreProperties({"id", "name", "challenges"})
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class Round {
     private String status;
     private List<Match> matches;

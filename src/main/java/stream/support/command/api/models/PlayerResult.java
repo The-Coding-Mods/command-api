@@ -12,7 +12,7 @@ import lombok.ToString;
 @ToString
 @NoArgsConstructor
 @AllArgsConstructor
-@JsonIgnoreProperties("score")
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class PlayerResult {
     private Player player;
     private int position;

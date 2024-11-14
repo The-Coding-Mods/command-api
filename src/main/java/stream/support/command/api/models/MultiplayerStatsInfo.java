@@ -12,7 +12,7 @@ import lombok.ToString;
 @ToString
 @NoArgsConstructor
 @AllArgsConstructor
-@JsonIgnoreProperties({"typeid", "accountid", "progression", "division", "division_next"})
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class MultiplayerStatsInfo {
     String typename;
     Integer rank;

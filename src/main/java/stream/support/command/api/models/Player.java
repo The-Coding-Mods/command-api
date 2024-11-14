@@ -13,7 +13,7 @@ import lombok.ToString;
 @ToString
 @NoArgsConstructor
 @AllArgsConstructor
-@JsonIgnoreProperties({"meta"})
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class Player {
 
     @JsonProperty("name")

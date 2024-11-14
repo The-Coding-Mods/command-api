@@ -14,7 +14,7 @@ import lombok.ToString;
 @ToString
 @NoArgsConstructor
 @AllArgsConstructor
-@JsonIgnoreProperties({"unit"})
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class CotdResult {
     @JsonProperty("results")
     private List<PlayerResult> playerResult;
