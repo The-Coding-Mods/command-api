@@ -96,7 +96,7 @@ public class CotdResultRepository {
     }
 
     /**
-     * Send request to tm.io api:
+     * Send request to tm.io api.
      * - get competition id
      * - get match id from competition
      * - get results (multiple pages)
@@ -113,19 +113,25 @@ public class CotdResultRepository {
 
         Optional<Competition> optional = cotdRecentHistory.getCompetitions().stream()
             .filter(c -> c.getName().contains("#1") && c.getName().contains(dayString)).findFirst();
-        if (optional.isPresent()) {
-            Cotd cotd = httpRequests.getCotdByCompId(optional.get().getId());
-            if (!cotd.isInvalid()) {
-                List<PlayerResult> cotdResult = httpRequests.getCotdResultsForMatch(optional.get().getId(),
-                    cotd.getRounds().get(0).getMatches().get(0).getId());
-                if (!cotdResult.isEmpty()) {
-                    cotdResult = cotdResult.stream().filter(playerResult -> playerResult.getPosition() != 0)
-                        .sorted(Comparator.comparingInt(PlayerResult::getPosition)).toList();
-                    cache.setLastCotdDiv1Results(cotdResult);
-                    cache.setLastUpdated(LocalDateTime.now(ZoneId.of("Europe/Paris")));
-                }
-            }
+        if (!optional.isPresent()) {
+            return;
         }
+        Cotd cotd = httpRequests.getCotdByCompId(optional.get().getId());
+        if (cotd.isInvalid()) {
+            return;
+        }
+        List<PlayerResult> cotdResult = httpRequests.getCotdResultsForMatch(optional.get().getId(),
+            cotd.getRounds().get(0).getMatches().get(0).getId());
+        if (cotdResult.isEmpty()) {
+            return;
+        }
+        cotdResult = cotdResult
+            .stream()
+            .filter(playerResult -> playerResult.getPosition() != 0)
+            .sorted(Comparator.comparingInt(PlayerResult::getPosition))
+            .toList();
+        cache.setLastCotdDiv1Results(cotdResult);
+        cache.setLastUpdated(LocalDateTime.now(ZoneId.of("Europe/Paris")));
     }
 
     private LocalDateTime getTodayCotdTime(LocalDateTime now) {
