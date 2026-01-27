@@ -10,7 +10,7 @@
     </parent>
     <groupId>trackmania.improvment</groupId>
     <artifactId>command-api</artifactId>
-    <version>0.4.3</version>
+    <version>0.4.4</version>
     <name>command_api</name>
     <description>Rest Api to improve commands</description>
     <properties>

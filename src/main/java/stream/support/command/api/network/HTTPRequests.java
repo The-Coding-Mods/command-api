@@ -23,7 +23,7 @@ public class HTTPRequests {
     private static final Map<String, String> TM_IO_API_HEADERS = new HashMap<>();
 
     static {
-        TM_IO_API_HEADERS.put("User-Agent", "latest-cotd-player-position by Tag365 (Tag365#0365)");
+        TM_IO_API_HEADERS.put("User-Agent", "latest-cotd-player-position by Tag365 (discord: tag365)");
     }
 
     public HTTPRequests(@Value("${followage.token}") String followageToken) {
@@ -80,7 +80,7 @@ public class HTTPRequests {
 
     public RecentCotdCompetitions getRecentCotdCompetitions() {
         GetRequest<RecentCotdCompetitions> cotdHistoryGetRequest =
-            new GetRequest<>("https://trackmania.io/api/cotd/0", RecentCotdCompetitions.class, TM_IO_API_HEADERS);
+            new GetRequest<>("https://trackmania.io/api/cups/cotd/0", RecentCotdCompetitions.class, TM_IO_API_HEADERS);
         Optional<RecentCotdCompetitions> optional = cotdHistoryGetRequest.execute().parse().getParsedResponse();
         return optional.orElse(null);
     }
